@@ -152,7 +152,7 @@ def update(id):
             'id':        id,
             'user':      user,
             'type':      type,
-            'сообщение': сообщение,
+            'message':   message,
         }
         return render_template('edit.html',user=user,roles=load_roles())
     mysql.connection().commit()
