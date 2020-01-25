@@ -10,14 +10,14 @@
 <div class="col-md-8 my-4 border border-white rounded" id="main">
     <div class="container text-center">
         {% if current_user.is_authenticated %}
-        <p> Вход выполнен успешно под учетной записью: <b style="color:rgba(255, 0, 0, 0.863)">
-                {{ current_user.username }} </b> ! </p>
-        <h1>Обращения</h1>
+        <p> Вход выполнен успешно под учетной записью: <b style="color:rgba(255, 0, 0, 0.863)"> {{ current_user.username }} </b> ! </p>
+        {% endif %} 
+        <h1>Пользователи</h1>
         <table class='table'>
             <thead>
                 <tr>
                     <th>№ обращения</th>
-                    <th>Дата</th>
+                    <th>Дата обращения</th>
                     <th>Пользователь</th>
                     <th>Тип обращения</th>
                     <th>Статус обращения</th>
@@ -54,14 +54,10 @@
                 {% endfor %}
             </tbody>
         </table>
-        {% endif %}
         {% if current_user.is_authenticated %}
         {% if current_user.can('create') %}
-        <a class='btn btn-primary' href="{{ url_for('new') }}">Новое обращение</a>
-        {% else %}
-        header("Location: /login");
+        <a class='btn btn-primary' href="{{ url_for('new') }}">Новый пользователь</a>
         {% endif %}
-
         {% endif %}
     </div>
 </div>
