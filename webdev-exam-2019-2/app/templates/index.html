@@ -21,18 +21,17 @@
                     <th>Тип обращения</th>
                     <th>Статус обращения</th>
                     <th>Сообщение</th>
-                    <th></th>
                 </tr>
             </thead>
             <tbody>
                 {% for user in appeal %}
                 <tr>
                     <td>{{ loop.index }}</td>
-                    <td>{{ user.дата }}</td>
-                    <td>{{ user.пользователь }}</td>
-                    <td>{{ user.тип }}</td>
-                    <td>{{ user.статус }}</td>
-                    <td>{{ user.сообщение }}</td>
+                    <td>{{ user.date }}</td>
+                    <td>{{ user.user }}</td>
+                    <td>{{ user.type }}</td>
+                    <td>{{ user.status }}</td>
+                    <td>{{ user.message }}</td>
                     {% if current_user.is_authenticated %}
                     {% if current_user.can('edit',record=user.id) %}
                     <td><a class='btn btn-primary ' href="{{ url_for('edit', id=user.id) }}">Редактировать
@@ -54,11 +53,11 @@
                 {% endfor %}
             </tbody>
         </table>
+        {% endif %}
         {% if current_user.is_authenticated %}
         {% if current_user.can('create') %}
         <a class='btn btn-primary' href="{{ url_for('new') }}">Новое обращение</a>
-        {% endif %}
-        {% endif %}
+        {% endif %}        
     </div>
 </div>
 {% endif %} 

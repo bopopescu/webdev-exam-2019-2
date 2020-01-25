@@ -9,7 +9,7 @@
     <div class="form-group row">
         <label for="staticEmail" class="col-sm-3 col-form-label">Пользователь:</label>
         <div class="col-sm-9">
-            <input type="text" class="form-control" name="user" value="{{ user.пользователь }}">
+            <input type="text" class="form-control" name="user" value="{{ user.пользователь }}">        
         </div>
     </div>
     <div class="form-group row">
@@ -18,13 +18,11 @@
             <input type="text" class="form-control" name="type" value="{{ user.тип }}">
         </div>
     </div>
-    {% if post.author == current_user.has_role('admin') or current_user.has_role('technick_user')}
     <div class="form-group row">
         <label for="staticEmail" class="col-sm-3 col-form-label">Статус обращения:</label>
         <div class="col-sm-9">
             <input type="text" class="form-control" name="status" value="{{ user.статус }}">
         </div>
-        {% endif %}
     </div>
     <div class="form-group row">
         <label for="staticEmail" class="col-sm-3 col-form-label">Сообщение:</label>

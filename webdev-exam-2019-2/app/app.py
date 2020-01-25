@@ -22,8 +22,8 @@ TECHNICK_USER = 12
 def is_admin():
     return flask_login.current_user.role_id == ADMIN_ROLE_ID
 
-def is_technick_user():
-    return flask_login.current_user.role_id == TECHNICK_USER_ROLE_ID
+def is_support():
+    return flask_login.current_user.role_id == SUPPORT_ROLE_ID
 
 def load_roles():
     cursor = mysql.connection().cursor(named_tuple=True)
@@ -45,14 +45,15 @@ class UsersPolicy:
         self.record = record
 
     def create(self):
-        return is_admin()
+        is_creating_user = flask_login.current_user.id == self.record
+        return is_admin() or is_creating_user
 
     def delete(self):
         return is_admin()
 
     def edit(self):
         is_editing_user = flask_login.current_user.id == self.record
-        return is_admin() or is_editing_user or is_technick_user
+        return is_admin() or is_editing_user or is_support
 
 class User(flask_login.UserMixin):
     def can(self, action, record=None):
@@ -134,32 +135,24 @@ def edit(id):
 def update(id):
     username =   request.form.get('username')
     password =   request.form.get('password')
-    lastname =   request.form.get('lastname')
-    firstname =  request.form.get('firstname')
-    middlename = request.form.get('middlename')
+    fio =   request.form.get('FIO')
     role_id =    request.form.get('role')
-    # Row = namedtuple('Row', user.keys())
-    # user = Row(**user)
     if not role_id:
         role_id = None
     query = ''' 
-    update users set username = %s,password=%s,lastname=%s,firstname=%s,middlename=%s,
-    role_id=%s where id=%s;
+    update users set date = %s,user=%s,type=%s,status=%s,message=%s where id=%s;
     '''
-    values = (username,password,lastname,firstname,middlename,role_id,id)
+    values = (date,user,type,status,message,id)
     cursor = mysql.connection().cursor(named_tuple=True)
     try:
         cursor.execute(query, values)
     except connector.errors.DatabaseError:
         flash('Введены некорректные данные. Ошибка сохранения', 'danger')
         user = {
-            'id': id,
-            'username':   username,
-            'password':   password,
-            'lastname':   lastname,
-            'firstname':  firstname,
-            'middlename': middlename,
-            'role_id':    role_id,
+            'id':        id,
+            'user':      user,
+            'type':      type,
+            'сообщение': сообщение,
         }
         return render_template('edit.html',user=user,roles=load_roles())
     mysql.connection().commit()
@@ -170,36 +163,31 @@ def update(id):
 @app.route('/users/create',methods=['POST','GET'])
 @flask_login.login_required
 def create():
-    username =   request.form.get('username')
-    password =   request.form.get('password')
-    lastname =   request.form.get('lastname')
-    firstname =  request.form.get('firstname')
-    middlename = request.form.get('middlename')
-    role_id =    request.form.get('role')
+    date =   request.form.get('date')
+    user =   request.form.get('user')
+    type =   request.form.get('type')    
+    message =    request.form.get('message')
     
-    if not role_id:
-        role_id = None
-
     query = ''' 
-    insert into users (username,password,lastname,firstname,middlename,role_id)
-    values (%s, %s, %s, %s, %s,%s);
+    insert into users (date,user,type,message)
+    values (%s, %s, %s, %s, %s,%s ,%s);
     '''
-    values = (username,password,lastname,firstname,middlename,role_id)
+    values = (date,user,type,status,message)
     cursor = mysql.connection().cursor(named_tuple=True)
     try:
         cursor.execute(query, values)
     except connector.errors.DatabaseError:
         flash('Введены некорректные данные. Ошибка сохранения', 'danger')
         user = {
-            'username':   username,
-            'password':   password,
-            'lastname':   lastname,
-            'firstname':  firstname,
-            'middlename': middlename,
+            'date':      date,
+            'user':      user,
+            'type':      type,
+            'status':    status, 
+            'message':   message,             
         }
         return render_template('new.html',user=user,roles=load_roles())
     mysql.connection().commit()
-    flash('Пользователь успешно создан!', 'success')
+    flash('Обращение успешно создано!', 'success')
     
     return redirect(url_for('index'))
 
@@ -212,7 +200,7 @@ def delete(id):
 
     cursor = mysql.connection().cursor(named_tuple=True)
     query = '''
-    delete from users where id=%s
+    delete from appeal where id=%s
     '''
     try:
         cursor.execute(query,(id,))
@@ -220,27 +208,5 @@ def delete(id):
         flash('Введены некорректные данные. Ошибка удаления', 'danger')
 
     mysql.connection().commit()
-    flash('Пользователь успешно удален!','success')
+    flash('Обращение успешно удалено!','success')
     return redirect(url_for('index'))
-
-@app.route('/incidents')
-def incidents_index():
-    cursor = mysql.connection().cursor(named_tuple=True)
-    cursor.execute('select * from incidents;')
-    incidents = cursor.fetchall()
-    statistic_query = '''
-        SELECT users.lastname, users.firstname, users.middlename, SUM(IF (incidents.id IS NULL, 0, 1 )) as incidents_count
-        FROM users 
-        LEFT JOIN incidents ON users.id = incidents.user_id
-        GROUP BY users.id
-    '''
-    cursor.execute(statistic_query)
-    statistic = cursor.fetchall()
-
-    count_query = '''
-        SELECT incidents.priority, COUNT(*) as quantity FROM incidents GROUP BY priority
-    '''
-    cursor.execute(count_query)
-    count = cursor.fetchall()
-    cursor.close()
-    return render_template('incidents/index.html', incidents=incidents, statistic=statistic, count=count)
