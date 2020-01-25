@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}Авторизация{% endblock %}
-{% block nav %}Лабораторная №6{% endblock %}
+{% block up %}Авторизация{% endblock %}
 {% block content %}
 <div class="col-md-8 my-4 border border-white rounded" id="main">
     <div class="container text-center">
@@ -11,7 +11,7 @@
                     <p><input type=submit class='btn btn-success' value='Войти'>
         </form>
         {% if not flag %}
-        <p style='color:red'>Неправильный логин или пароль</p>
+        <p style='color:orangered'>Пожалуйста авторизуйтесь</p>
         {% endif %}
     </div>
 </div>

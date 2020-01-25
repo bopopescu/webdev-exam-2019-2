@@ -10,7 +10,8 @@
 <div class="col-md-8 my-4 border border-white rounded" id="main">
     <div class="container text-center">
         {% if current_user.is_authenticated %}
-        <p> Вход выполнен успешно под учетной записью: <b style="color:rgba(255, 0, 0, 0.863)"> {{ current_user.username }} </b> ! </p>
+        <p> Вход выполнен успешно под учетной записью: <b style="color:rgba(255, 0, 0, 0.863)">
+                {{ current_user.username }} </b> ! </p>
         <h1>Обращения</h1>
         <table class='table'>
             <thead>
@@ -57,8 +58,11 @@
         {% if current_user.is_authenticated %}
         {% if current_user.can('create') %}
         <a class='btn btn-primary' href="{{ url_for('new') }}">Новое обращение</a>
-        {% endif %}        
+        {% else %}
+        header("Location: /login");
+        {% endif %}
+
+        {% endif %}
     </div>
 </div>
-{% endif %} 
 {% endblock %}

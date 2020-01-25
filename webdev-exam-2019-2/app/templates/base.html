@@ -35,6 +35,9 @@
               <li class="nav-item">
                 <a class="nav-link" href="http://webdev-exam-2019-2.std-868.ist.mospolytech.ru">Главная страница</a>
               </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('new') }}">Новое обращение</a>
+              </li>
               {% if not current_user.is_authenticated %}
               <li class="nav-item">
                 <a class="nav-link" href="/login">Вход</span></a>
@@ -43,7 +46,7 @@
               <li class="nav-item">
                 <a class="nav-link" href="/logout">Выход</a>
               </li>
-              {% endif %}
+              {% endif %}              
               </ul>
           </div>
         </div>
@@ -74,5 +77,4 @@
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script>
 </body>
-
 </html>

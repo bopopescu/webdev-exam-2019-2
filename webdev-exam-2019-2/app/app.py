@@ -14,7 +14,7 @@ login_manager = flask_login.LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
 login_manager.session_protection = "strong"
-login_manager.login_message = 'Для доступа...'
+login_manager.login_message = 'Для доступа к данной странице пожалуйста авторизуйтесь'
 
 ADMIN_ROLE_ID = 11
 TECHNICK_USER = 12
