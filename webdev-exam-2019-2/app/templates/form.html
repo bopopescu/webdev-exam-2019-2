@@ -1,0 +1,39 @@
+{% macro render_user_form(url, roles, user={}) %}
+<form method="POST" action="{{ url }}">
+    <div class="form-group row">
+        <label for="staticEmail" class="col-sm-3 col-form-label">Дата:</label>
+        <div class="col-sm-9">
+            <input type="date" class="form-control" name="data" value="{{ user.дата }}">
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="staticEmail" class="col-sm-3 col-form-label">Пользователь:</label>
+        <div class="col-sm-9">
+            <input type="text" class="form-control" name="user" value="{{ user.пользователь }}">
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="staticEmail" class="col-sm-3 col-form-label">Тип обращения:</label>
+        <div class="col-sm-9">
+            <input type="text" class="form-control" name="type" value="{{ user.тип }}">
+        </div>
+    </div>
+    {% if post.author == current_user.has_role('admin') or current_user.has_role('technick_user')}
+    <div class="form-group row">
+        <label for="staticEmail" class="col-sm-3 col-form-label">Статус обращения:</label>
+        <div class="col-sm-9">
+            <input type="text" class="form-control" name="status" value="{{ user.статус }}">
+        </div>
+        {% endif %}
+    </div>
+    <div class="form-group row">
+        <label for="staticEmail" class="col-sm-3 col-form-label">Сообщение:</label>
+        <div class="col-sm-9">
+            <input type="text" class="form-control" name="message" value="{{ user.сообщение }}">
+        </div>
+    </div>
+    <div class="row my-3">
+        <input type="submit" class="btn btn-primary btn-block" value="Сохранить">
+    </div>
+</form>
+{% endmacro %}

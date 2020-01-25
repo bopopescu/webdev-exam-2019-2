@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}Главная{% endblock %}
+
+{% block up %}
+<h1 align="center">Техническая поддержка</h1>
+{% endblock %}
+
+{% block content %}
+<div class="col-md-8 my-4 border border-white rounded" id="main">
+    <div class="container text-center">
+        {% if current_user.is_authenticated %}
+        <p> Вход выполнен успешно под учетной записью: <b style="color:rgba(255, 0, 0, 0.863)"> {{ current_user.username }} </b> ! </p>
+        <h1>Обращения</h1>
+        <table class='table'>
+            <thead>
+                <tr>
+                    <th>№ обращения</th>
+                    <th>Дата</th>
+                    <th>Пользователь</th>
+                    <th>Тип обращения</th>
+                    <th>Статус обращения</th>
+                    <th>Сообщение</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in appeal %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ user.дата }}</td>
+                    <td>{{ user.пользователь }}</td>
+                    <td>{{ user.тип }}</td>
+                    <td>{{ user.статус }}</td>
+                    <td>{{ user.сообщение }}</td>
+                    {% if current_user.is_authenticated %}
+                    {% if current_user.can('edit',record=user.id) %}
+                    <td><a class='btn btn-primary ' href="{{ url_for('edit', id=user.id) }}">Редактировать
+                            пользователя</a></td>
+                    {% endif %}
+                    {% endif %}
+                    <td><a class='btn btn-primary' href="{{ url_for('show',id = user.id) }}">Просмотр</a></td>
+
+                    {% if current_user.is_authenticated %}
+                    {% if current_user.can('delete') %}
+                    <td>
+                        <form method='POST' action="{{ url_for('delete',id = user.id) }}">
+                            <input type='submit' class='btn btn-warning' value='Удалить'>
+                        </form>
+                    </td>
+                    {% endif %}
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% if current_user.is_authenticated %}
+        {% if current_user.can('create') %}
+        <a class='btn btn-primary' href="{{ url_for('new') }}">Новое обращение</a>
+        {% endif %}
+        {% endif %}
+    </div>
+</div>
+{% endif %} 
+{% endblock %}
